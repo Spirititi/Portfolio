@@ -103,6 +103,7 @@
 </head>
 <body>
   <div class="page">
+
     <div class="hero">
       <div class="profile">
         <a id="discordLink" target="_blank" class="pfp-wrapper">
@@ -118,13 +119,14 @@
     <section>
       <h2>Projects</h2>
       <div class="section-card">
-        Add your projects here later.
+        Add your projects here.
       </div>
     </section>
 
     <footer>
-      Discord presence via Lanyard REST
+      Discord presence powered by REST polling
     </footer>
+
   </div>
 
   <script>
@@ -135,6 +137,7 @@
     const discordLink = document.getElementById("discordLink");
 
     discordLink.href = `https://discord.com/users/${USER_ID}`;
+    pfp.src = "https://cdn.discordapp.com/embed/avatars/0.png";
 
     const statusColors = {
       online: "var(--online)",
@@ -143,35 +146,29 @@
       offline: "var(--offline)"
     };
 
-    // fallback avatar
-    pfp.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+    // CORS-safe proxy (works even from file://)
+    const API = `https://api.allorigins.win/raw?url=https://api.lanyard.rest/v1/users/${USER_ID}`;
 
     async function updatePresence() {
       try {
-        const res = await fetch(`https://api.lanyard.rest/v1/users/${USER_ID}`);
+        const res = await fetch(API);
         const json = await res.json();
-
-        if (!json.success) return;
-
         const data = json.data;
 
-        // update status
+        // status
         statusDot.style.background =
           statusColors[data.discord_status || "offline"];
 
-        // update avatar
+        // avatar
         if (data.discord_user?.avatar) {
           pfp.src = `https://cdn.discordapp.com/avatars/${USER_ID}/${data.discord_user.avatar}.png?size=256`;
         }
-      } catch (err) {
-        console.error("Presence error:", err);
+      } catch (e) {
+        console.error("Discord presence failed:", e);
       }
     }
 
-    // initial load
     updatePresence();
-
-    // refresh every 15 seconds
     setInterval(updatePresence, 15000);
   </script>
 </body>
