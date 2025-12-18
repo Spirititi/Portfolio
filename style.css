@@ -43,8 +43,10 @@ body {
   border-radius: 50%;
   border: 3px solid #1e1e26;
   position: relative;
-  z-index: 2; /* on top of circle */
+  z-index: 2;
+  object-fit: cover; /* keep aspect ratio, crop if needed */
 }
+
 
 /* Animated white circle around PFP */
 .pfp-circle {
