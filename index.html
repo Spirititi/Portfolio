@@ -76,6 +76,29 @@
       color: var(--muted);
       font-size: 15px;
     }
+
+    section {
+      margin-top: 80px;
+    }
+
+    section h2 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .section-card {
+      background: linear-gradient(145deg, #0e0e12, #0a0a0d);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 0 0 1px #1c1c22;
+    }
+
+    footer {
+      margin-top: 120px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -83,7 +106,7 @@
     <div class="hero">
       <div class="profile">
         <a id="discordLink" target="_blank" class="pfp-wrapper">
-          <img id="pfp" class="pfp">
+          <img id="pfp" class="pfp" />
           <div id="status" class="status-dot"></div>
         </a>
 
@@ -91,6 +114,17 @@
         <div class="subtitle">Backend Developer • Tools & Apps</div>
       </div>
     </div>
+
+    <section>
+      <h2>Projects</h2>
+      <div class="section-card">
+        Add your projects here later.
+      </div>
+    </section>
+
+    <footer>
+      Discord presence via Lanyard REST
+    </footer>
   </div>
 
   <script>
@@ -101,7 +135,6 @@
     const discordLink = document.getElementById("discordLink");
 
     discordLink.href = `https://discord.com/users/${USER_ID}`;
-    pfp.src = "https://cdn.discordapp.com/embed/avatars/0.png";
 
     const statusColors = {
       online: "var(--online)",
@@ -110,54 +143,36 @@
       offline: "var(--offline)"
     };
 
-    let heartbeatInterval = null;
-    let ws = null;
+    // fallback avatar
+    pfp.src = "https://cdn.discordapp.com/embed/avatars/0.png";
 
-    function connect() {
-      ws = new WebSocket("wss://api.lanyard.rest/socket");
+    async function updatePresence() {
+      try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${USER_ID}`);
+        const json = await res.json();
 
-      ws.onmessage = (event) => {
-        const msg = JSON.parse(event.data);
+        if (!json.success) return;
 
-        // HELLO → start heartbeat
-        if (msg.op === 1) {
-          heartbeatInterval = setInterval(() => {
-            ws.send(JSON.stringify({ op: 3 }));
-          }, msg.d.heartbeat_interval);
+        const data = json.data;
 
-          ws.send(JSON.stringify({
-            op: 2,
-            d: { subscribe_to_ids: [USER_ID] }
-          }));
+        // update status
+        statusDot.style.background =
+          statusColors[data.discord_status || "offline"];
+
+        // update avatar
+        if (data.discord_user?.avatar) {
+          pfp.src = `https://cdn.discordapp.com/avatars/${USER_ID}/${data.discord_user.avatar}.png?size=256`;
         }
-
-        // INIT_STATE
-        if (msg.op === 1 && msg.d?.[USER_ID]) {
-          update(msg.d[USER_ID]);
-        }
-
-        // PRESENCE_UPDATE
-        if (msg.op === 0 && msg.d?.user_id === USER_ID) {
-          update(msg.d);
-        }
-      };
-
-      ws.onclose = () => {
-        clearInterval(heartbeatInterval);
-        setTimeout(connect, 3000); // auto reconnect
-      };
-    }
-
-    function update(data) {
-      const status = data.discord_status || "offline";
-      statusDot.style.background = statusColors[status];
-
-      if (data.discord_user?.avatar) {
-        pfp.src = `https://cdn.discordapp.com/avatars/${USER_ID}/${data.discord_user.avatar}.png?size=256`;
+      } catch (err) {
+        console.error("Presence error:", err);
       }
     }
 
-    connect();
+    // initial load
+    updatePresence();
+
+    // refresh every 15 seconds
+    setInterval(updatePresence, 15000);
   </script>
 </body>
 </html>
