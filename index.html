@@ -9,7 +9,6 @@
     :root {
       --bg: #0b0b0d;
       --bg-soft: #121216;
-      --bg-card: #0e0e12;
       --accent: #5865F2;
       --text: #e6e6e6;
       --muted: #9a9a9a;
@@ -28,14 +27,12 @@
       color: var(--text);
     }
 
-    /* ===== PAGE WRAPPER ===== */
     .page {
       max-width: 1000px;
       margin: 0 auto;
       padding: 60px 24px 120px;
     }
 
-    /* ===== HERO / PROFILE ===== */
     .hero {
       background: linear-gradient(145deg, #0e0e12, #0a0a0d);
       border-radius: 22px;
@@ -44,15 +41,12 @@
     }
 
     .profile {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
       text-align: center;
     }
 
     .pfp-wrapper {
       position: relative;
+      display: inline-block;
     }
 
     .pfp {
@@ -74,127 +68,40 @@
     }
 
     h1 {
+      margin: 16px 0 6px;
       font-size: 28px;
-      margin: 12px 0 0;
     }
 
     .subtitle {
       color: var(--muted);
       font-size: 15px;
     }
-
-    /* ===== LANGUAGES ===== */
-    .langs {
-      margin-top: 32px;
-      padding: 18px;
-      background: var(--bg-soft);
-      border-radius: 14px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .langs img {
-      width: 36px;
-      height: 36px;
-      filter: grayscale(100%) brightness(0.9);
-      transition: 0.2s ease;
-    }
-
-    .langs img:hover {
-      filter: none;
-      transform: translateY(-2px);
-    }
-
-    /* ===== SECTIONS ===== */
-    section {
-      margin-top: 80px;
-    }
-
-    section h2 {
-      font-size: 22px;
-      margin-bottom: 16px;
-    }
-
-    .section-card {
-      background: linear-gradient(145deg, #0e0e12, #0a0a0d);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 0 0 1px #1c1c22;
-    }
-
-    .placeholder {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    footer {
-      margin-top: 120px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-    }
   </style>
 </head>
 <body>
   <div class="page">
-
-    <!-- HERO -->
     <div class="hero">
       <div class="profile">
         <a id="discordLink" target="_blank" class="pfp-wrapper">
-          <img id="pfp" class="pfp" />
+          <img id="pfp" class="pfp">
           <div id="status" class="status-dot"></div>
         </a>
 
         <h1>Your Name</h1>
         <div class="subtitle">Backend Developer • Tools & Apps</div>
-
-        <div class="langs">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" />
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" />
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" />
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" />
-        </div>
       </div>
     </div>
-
-    <!-- PROJECTS (ADD MORE CARDS HERE LATER) -->
-    <section>
-      <h2>Projects</h2>
-      <div class="section-card">
-        <p class="placeholder">
-          Your projects will go here.  
-          Add cards, screenshots, GitHub links, or live demos.
-        </p>
-      </div>
-    </section>
-
-    <!-- ABOUT / EXPERIENCE -->
-    <section>
-      <h2>About</h2>
-      <div class="section-card">
-        <p class="placeholder">
-          Short bio, experience, interests, or goals.
-        </p>
-      </div>
-    </section>
-
-    <footer>
-      Discord presence powered by Lanyard
-    </footer>
   </div>
 
   <script>
-    const DISCORD_USER_ID = "1322015039435309107";
+    const USER_ID = "1322015039435309107";
 
+    const pfp = document.getElementById("pfp");
     const statusDot = document.getElementById("status");
-    const pfpImg = document.getElementById("pfp");
     const discordLink = document.getElementById("discordLink");
 
-    discordLink.href = `https://discord.com/users/${DISCORD_USER_ID}`;
+    discordLink.href = `https://discord.com/users/${USER_ID}`;
+    pfp.src = "https://cdn.discordapp.com/embed/avatars/0.png";
 
     const statusColors = {
       online: "var(--online)",
@@ -203,37 +110,54 @@
       offline: "var(--offline)"
     };
 
-    pfpImg.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+    let heartbeatInterval = null;
+    let ws = null;
 
-    const ws = new WebSocket("wss://api.lanyard.rest/socket");
+    function connect() {
+      ws = new WebSocket("wss://api.lanyard.rest/socket");
 
-    ws.onopen = () => {
-      ws.send(JSON.stringify({
-        op: 2,
-        d: { subscribe_to_ids: [DISCORD_USER_ID] }
-      }));
-    };
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
 
-    ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
+        // HELLO → start heartbeat
+        if (msg.op === 1) {
+          heartbeatInterval = setInterval(() => {
+            ws.send(JSON.stringify({ op: 3 }));
+          }, msg.d.heartbeat_interval);
 
-      if (msg.op === 1) {
-        const data = msg.d[DISCORD_USER_ID];
-        if (data) updatePresence(data);
-      }
+          ws.send(JSON.stringify({
+            op: 2,
+            d: { subscribe_to_ids: [USER_ID] }
+          }));
+        }
 
-      if (msg.op === 0 && msg.d?.user_id === DISCORD_USER_ID) {
-        updatePresence(msg.d);
-      }
-    };
+        // INIT_STATE
+        if (msg.op === 1 && msg.d?.[USER_ID]) {
+          update(msg.d[USER_ID]);
+        }
 
-    function updatePresence(data) {
-      statusDot.style.background = statusColors[data.discord_status || "offline"];
+        // PRESENCE_UPDATE
+        if (msg.op === 0 && msg.d?.user_id === USER_ID) {
+          update(msg.d);
+        }
+      };
+
+      ws.onclose = () => {
+        clearInterval(heartbeatInterval);
+        setTimeout(connect, 3000); // auto reconnect
+      };
+    }
+
+    function update(data) {
+      const status = data.discord_status || "offline";
+      statusDot.style.background = statusColors[status];
 
       if (data.discord_user?.avatar) {
-        pfpImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${data.discord_user.avatar}.png?size=256`;
+        pfp.src = `https://cdn.discordapp.com/avatars/${USER_ID}/${data.discord_user.avatar}.png?size=256`;
       }
     }
+
+    connect();
   </script>
 </body>
 </html>
