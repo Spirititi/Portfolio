@@ -4,97 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portfolio</title>
-
-  <style>
-    :root {
-      --bg: #0b0b0d;
-      --bg-soft: #121216;
-      --accent: #5865F2;
-      --text: #e6e6e6;
-      --muted: #9a9a9a;
-      --online: #3ba55d;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, sans-serif;
-      background: radial-gradient(circle at top, #15151b, var(--bg));
-      color: var(--text);
-    }
-
-    .page {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 60px 24px 120px;
-    }
-
-    .hero {
-      background: linear-gradient(145deg, #0e0e12, #0a0a0d);
-      border-radius: 22px;
-      padding: 40px;
-      box-shadow: 0 0 0 1px #1c1c22, 0 40px 80px rgba(0,0,0,0.7);
-      text-align: center;
-    }
-
-    .pfp-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-
-    .pfp {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid #1e1e26;
-    }
-
-    .status-dot {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 3px solid var(--bg-soft);
-      background: var(--online);
-    }
-
-    h1 { margin: 16px 0 6px; font-size: 28px; }
-    .subtitle { color: var(--muted); font-size: 15px; }
-
-    .langs {
-      margin-top: 32px;
-      padding: 18px;
-      background: var(--bg-soft);
-      border-radius: 14px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .langs img {
-      width: 36px;
-      height: 36px;
-      filter: grayscale(100%) brightness(0.9);
-      transition: 0.2s ease;
-    }
-
-    .langs img:hover { filter: none; transform: translateY(-2px); }
-
-    section { margin-top: 80px; }
-    section h2 { font-size: 22px; margin-bottom: 16px; }
-    .section-card {
-      background: linear-gradient(145deg, #0e0e12, #0a0a0d);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 0 0 1px #1c1c22;
-    }
-
-    footer { margin-top: 120px; text-align: center; font-size: 12px; color: var(--muted); }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="page">
@@ -102,19 +12,18 @@
     <!-- HERO -->
     <div class="hero">
       <div class="pfp-wrapper">
+        <div class="pfp-circle"></div>
         <img class="pfp" src="91c4080b967cf6445e10dd98cbed0192.jpg" alt="Profile Picture">
         <div class="status-dot"></div>
       </div>
-      <h1>Your Name</h1>
-      <div class="subtitle">Backend Developer • Tools & Apps</div>
+      <h1>Valah</h1>
+      <div class="subtitle">Backend/Game Dev</div>
 
       <!-- LANGUAGES -->
       <div class="langs">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg" alt="Lua">
       </div>
     </div>
 
@@ -123,7 +32,7 @@
       <h2>About Me</h2>
       <div class="section-card">
         <p>
-          Hello! I am a backend developer who loves building tools and apps. I enjoy learning new technologies, solving problems, and creating projects that make life easier.
+          Backend Developer / Game Developer, working on new games and soon to have PROJECTS!
         </p>
       </div>
     </section>
@@ -132,11 +41,11 @@
     <section>
       <h2>Projects</h2>
       <div class="section-card">
-        <p>Here you can showcase your projects, GitHub links, or live demos.</p>
+        <p>Coming Soon...</p>
       </div>
     </section>
 
-    <footer>Portfolio built with HTML & CSS • Status always online</footer>
+    <footer>Portfolio Built By Chatgpt i am in no way a front end Developer</footer>
   </div>
 </body>
 </html>
