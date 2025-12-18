@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,7 +123,6 @@
     </div>
 
     <div class="langs">
-      <!-- Replace or add languages here -->
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" />
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" />
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
@@ -134,12 +134,7 @@
   </div>
 
   <script>
-    /* =============================
-       CONFIG
-    ============================= */
-    const DISCORD_USER_ID = "PUT_USER_ID_HERE";
-
-    /* ============================= */
+    const DISCORD_USER_ID = "1322015039435309107";
 
     const statusDot = document.getElementById("status");
     const pfpImg = document.getElementById("pfp");
@@ -154,28 +149,43 @@
       offline: "var(--offline)"
     };
 
+    // fallback avatar so it never shows blank
+    pfpImg.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+
     const ws = new WebSocket("wss://api.lanyard.rest/socket");
 
     ws.onopen = () => {
       ws.send(JSON.stringify({
         op: 2,
-        d: { subscribe_to_id: DISCORD_USER_ID }
+        d: {
+          subscribe_to_ids: [DISCORD_USER_ID]
+        }
       }));
     };
 
     ws.onmessage = (event) => {
       const msg = JSON.parse(event.data);
-      if (!msg.d || !msg.d.discord_user) return;
 
-      const user = msg.d.discord_user;
-      const status = msg.d.discord_status || "offline";
+      // Initial state
+      if (msg.op === 1) {
+        const data = msg.d[DISCORD_USER_ID];
+        if (data) updatePresence(data);
+      }
 
-      statusDot.style.background = statusColors[status];
-
-      if (user.avatar) {
-        pfpImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${user.avatar}.png?size=256`;
+      // Live updates
+      if (msg.op === 0 && msg.d?.user_id === DISCORD_USER_ID) {
+        updatePresence(msg.d);
       }
     };
+
+    function updatePresence(data) {
+      const status = data.discord_status || "offline";
+      statusDot.style.background = statusColors[status];
+
+      if (data.discord_user?.avatar) {
+        pfpImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${data.discord_user.avatar}.png?size=256`;
+      }
+    }
   </script>
 </body>
 </html>
