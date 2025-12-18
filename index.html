@@ -13,9 +13,6 @@
       --text: #e6e6e6;
       --muted: #9a9a9a;
       --online: #3ba55d;
-      --idle: #faa81a;
-      --dnd: #ed4245;
-      --offline: #747f8d;
     }
 
     * { box-sizing: border-box; }
@@ -38,9 +35,6 @@
       border-radius: 22px;
       padding: 40px;
       box-shadow: 0 0 0 1px #1c1c22, 0 40px 80px rgba(0,0,0,0.7);
-    }
-
-    .profile {
       text-align: center;
     }
 
@@ -64,28 +58,34 @@
       height: 18px;
       border-radius: 50%;
       border: 3px solid var(--bg-soft);
-      background: var(--offline);
+      background: var(--online);
     }
 
-    h1 {
-      margin: 16px 0 6px;
-      font-size: 28px;
+    h1 { margin: 16px 0 6px; font-size: 28px; }
+    .subtitle { color: var(--muted); font-size: 15px; }
+
+    .langs {
+      margin-top: 32px;
+      padding: 18px;
+      background: var(--bg-soft);
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
     }
 
-    .subtitle {
-      color: var(--muted);
-      font-size: 15px;
+    .langs img {
+      width: 36px;
+      height: 36px;
+      filter: grayscale(100%) brightness(0.9);
+      transition: 0.2s ease;
     }
 
-    section {
-      margin-top: 80px;
-    }
+    .langs img:hover { filter: none; transform: translateY(-2px); }
 
-    section h2 {
-      font-size: 22px;
-      margin-bottom: 16px;
-    }
-
+    section { margin-top: 80px; }
+    section h2 { font-size: 22px; margin-bottom: 16px; }
     .section-card {
       background: linear-gradient(145deg, #0e0e12, #0a0a0d);
       border-radius: 18px;
@@ -93,83 +93,50 @@
       box-shadow: 0 0 0 1px #1c1c22;
     }
 
-    footer {
-      margin-top: 120px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-    }
+    footer { margin-top: 120px; text-align: center; font-size: 12px; color: var(--muted); }
   </style>
 </head>
 <body>
   <div class="page">
 
+    <!-- HERO -->
     <div class="hero">
-      <div class="profile">
-        <a id="discordLink" target="_blank" class="pfp-wrapper">
-          <img id="pfp" class="pfp" />
-          <div id="status" class="status-dot"></div>
-        </a>
+      <div class="pfp-wrapper">
+        <img class="pfp" src="YOUR_CUSTOM_PFP_URL_HERE" alt="Profile Picture">
+        <div class="status-dot"></div>
+      </div>
+      <h1>Your Name</h1>
+      <div class="subtitle">Backend Developer • Tools & Apps</div>
 
-        <h1>Your Name</h1>
-        <div class="subtitle">Backend Developer • Tools & Apps</div>
+      <!-- LANGUAGES -->
+      <div class="langs">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
       </div>
     </div>
 
+    <!-- BIO / ABOUT -->
     <section>
-      <h2>Projects</h2>
+      <h2>About Me</h2>
       <div class="section-card">
-        Add your projects here.
+        <p>
+          Hello! I am a backend developer who loves building tools and apps. I enjoy learning new technologies, solving problems, and creating projects that make life easier.
+        </p>
       </div>
     </section>
 
-    <footer>
-      Discord presence powered by REST polling
-    </footer>
+    <!-- PROJECTS -->
+    <section>
+      <h2>Projects</h2>
+      <div class="section-card">
+        <p>Here you can showcase your projects, GitHub links, or live demos.</p>
+      </div>
+    </section>
 
+    <footer>Portfolio built with HTML & CSS • Status always online</footer>
   </div>
-
-  <script>
-    const USER_ID = "1322015039435309107";
-
-    const pfp = document.getElementById("pfp");
-    const statusDot = document.getElementById("status");
-    const discordLink = document.getElementById("discordLink");
-
-    discordLink.href = `https://discord.com/users/${USER_ID}`;
-    pfp.src = "https://cdn.discordapp.com/embed/avatars/0.png";
-
-    const statusColors = {
-      online: "var(--online)",
-      idle: "var(--idle)",
-      dnd: "var(--dnd)",
-      offline: "var(--offline)"
-    };
-
-    // CORS-safe proxy (works even from file://)
-    const API = `https://api.allorigins.win/raw?url=https://api.lanyard.rest/v1/users/${USER_ID}`;
-
-    async function updatePresence() {
-      try {
-        const res = await fetch(API);
-        const json = await res.json();
-        const data = json.data;
-
-        // status
-        statusDot.style.background =
-          statusColors[data.discord_status || "offline"];
-
-        // avatar
-        if (data.discord_user?.avatar) {
-          pfp.src = `https://cdn.discordapp.com/avatars/${USER_ID}/${data.discord_user.avatar}.png?size=256`;
-        }
-      } catch (e) {
-        console.error("Discord presence failed:", e);
-      }
-    }
-
-    updatePresence();
-    setInterval(updatePresence, 15000);
-  </script>
 </body>
 </html>
