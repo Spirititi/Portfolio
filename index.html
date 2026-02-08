@@ -1,262 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio</title>
-  <link rel="icon" href="geography-xxl.png" type="image/png">
-  <style>
-    :root {
-      --bg: #0b0b0d;
-      --bg-soft: #121216;
-      --accent: #5865F2;
-      --text: #e6e6e6;
-      --muted: #9a9a9a;
-      --online: #3ba55d;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio</title>
+<link rel="icon" href="geography-xxl.png" type="image/png">
+<style>
+:root { --bg:#0b0b0d; --bg-soft:#121216; --accent:#5865F2; --text:#e6e6e6; --muted:#9a9a9a; --online:#3ba55d; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: Inter, system-ui, sans-serif; background: radial-gradient(circle at top,#15151b,var(--bg)); color:var(--text); }
+.page { max-width:1000px; margin:0 auto; padding:60px 24px 120px; }
 
-    * { box-sizing: border-box; }
+/* Tabs */
+.tabs { display:flex; justify-content:center; gap:16px; margin-bottom:40px; }
+.tab-btn { padding:10px 20px; border-radius:12px; background:var(--bg-soft); border:1px solid #1c1c22; color:var(--text); cursor:pointer; transition:0.2s ease; }
+.tab-btn:hover, .tab-btn.active { background:var(--accent); color:#fff; }
 
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, sans-serif;
-      background: radial-gradient(circle at top, #15151b, var(--bg));
-      color: var(--text);
-    }
+/* Hero */
+.hero { background:linear-gradient(145deg,#0e0e12,#0a0a0d); border-radius:22px; padding:40px; box-shadow:0 0 0 1px #1c1c22,0 40px 80px rgba(0,0,0,0.7); text-align:center; }
+.pfp-wrapper { position:relative; display:inline-block; width:120px; height:120px; }
+.pfp { width:120px; height:120px; border-radius:50%; border:3px solid #1e1e26; position:relative; z-index:2; object-fit:cover; }
+.pfp-circle { position:absolute; top:-6px; left:-6px; width:132px; height:132px; border:3px solid white; border-radius:50%; border-top-color:transparent; animation:spin 1.5s linear infinite; z-index:1; }
+@keyframes spin { 0% { transform:rotate(0deg);} 100% { transform:rotate(360deg);}}
+.status-dot { position:absolute; bottom:8px; right:8px; width:18px; height:18px; border-radius:50%; border:3px solid var(--bg-soft); background:var(--online); z-index:3;}
+h1 { margin:16px 0 6px; font-size:28px; }
+.subtitle { color:var(--muted); font-size:15px; }
+.langs { margin-top:32px; padding:18px; background:var(--bg-soft); border-radius:14px; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;}
+.langs img { width:36px; height:36px; filter:grayscale(100%) brightness(0.9); transition:0.2s ease; }
+.langs img:hover { filter:none; transform:translateY(-2px); }
 
-    .page {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 60px 24px 120px;
-    }
+/* Sections */
+section { margin-top:80px; }
+section h2 { font-size:22px; margin-bottom:16px; }
+.section-card { background:linear-gradient(145deg,#0e0e12,#0a0a0d); border-radius:18px; padding:28px; box-shadow:0 0 0 1px #1c1c22; }
 
-    /* NAVIGATION TABS */
-    .tabs {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 40px;
-    }
+/* Projects */
+.projects-grid { display:flex; flex-wrap:wrap; gap:16px; }
+.project-card { background:var(--bg-soft); border-radius:14px; padding:16px; flex:1 1 200px; min-width:200px; box-shadow:0 0 0 1px #1c1c22;}
+.project-card img { width:100%; border-radius:12px; margin-bottom:12px; }
+.project-card h3 { margin:8px 0; }
+.project-card p { font-size:14px; color:var(--muted); }
 
-    .tab-btn {
-      padding: 10px 20px;
-      border-radius: 12px;
-      background: var(--bg-soft);
-      border: 1px solid #1c1c22;
-      color: var(--text);
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
+/* Dev Log */
+.devlog-list { display:flex; flex-direction:column; gap:12px; }
+.devlog-item { background:var(--bg-soft); padding:16px; border-radius:14px; box-shadow:0 0 0 1px #1c1c22; }
 
-    .tab-btn:hover, .tab-btn.active {
-      background: var(--accent);
-      color: #fff;
-    }
+/* Admin */
+#adminPanel input,#adminPanel button { margin:4px 4px 10px 0; padding:6px 10px; border-radius:8px; border:1px solid #1c1c22; background:var(--bg-soft); color:var(--text); }
+#adminPanel h4 { margin:10px 0 4px; }
 
-    .hero {
-      background: linear-gradient(145deg, #0e0e12, #0a0a0d);
-      border-radius: 22px;
-      padding: 40px;
-      box-shadow: 0 0 0 1px #1c1c22, 0 40px 80px rgba(0,0,0,0.7);
-      text-align: center;
-    }
-
-    .pfp-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 120px;
-      height: 120px;
-    }
-
-    .pfp {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid #1e1e26;
-      position: relative;
-      z-index: 2;
-      object-fit: cover;
-    }
-
-    .pfp-circle {
-      position: absolute;
-      top: -6px;
-      left: -6px;
-      width: 132px;
-      height: 132px;
-      border: 3px solid white;
-      border-radius: 50%;
-      border-top-color: transparent;
-      animation: spin 1.5s linear infinite;
-      z-index: 1;
-    }
-
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    .status-dot {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 3px solid var(--bg-soft);
-      background: var(--online);
-      z-index: 3;
-    }
-
-    h1 { margin: 16px 0 6px; font-size: 28px; }
-    .subtitle { color: var(--muted); font-size: 15px; }
-
-    .langs {
-      margin-top: 32px;
-      padding: 18px;
-      background: var(--bg-soft);
-      border-radius: 14px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .langs img {
-      width: 36px;
-      height: 36px;
-      filter: grayscale(100%) brightness(0.9);
-      transition: 0.2s ease;
-    }
-
-    .langs img:hover { filter: none; transform: translateY(-2px); }
-
-    section { margin-top: 80px; }
-    section h2 { font-size: 22px; margin-bottom: 16px; }
-    .section-card {
-      background: linear-gradient(145deg, #0e0e12, #0a0a0d);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 0 0 1px #1c1c22;
-    }
-
-    /* Projects Gallery */
-    .projects-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .project-card {
-      background: var(--bg-soft);
-      border-radius: 14px;
-      padding: 16px;
-      flex: 1 1 200px;
-      min-width: 200px;
-      box-shadow: 0 0 0 1px #1c1c22;
-    }
-
-    .project-card img {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 12px;
-    }
-
-    .project-card h3 { margin: 8px 0; }
-    .project-card p { font-size: 14px; color: var(--muted); }
-
-    /* Dev Log */
-    .devlog-list { display: flex; flex-direction: column; gap: 12px; }
-    .devlog-item {
-      background: var(--bg-soft);
-      padding: 16px;
-      border-radius: 14px;
-      box-shadow: 0 0 0 1px #1c1c22;
-    }
-
-    footer { margin-top: 120px; text-align: center; font-size: 12px; color: var(--muted); }
-
-  </style>
+footer { margin-top:120px; text-align:center; font-size:12px; color:var(--muted); }
+</style>
 </head>
 <body>
-  <div class="page">
+<div class="page">
 
-    <!-- NAVIGATION TABS -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showSection('home')">Home</button>
-      <button class="tab-btn" onclick="showSection('projects')">Projects</button>
-      <button class="tab-btn" onclick="showSection('devlog')">Dev Log</button>
-    </div>
-
-    <!-- HOME -->
-    <section id="home">
-      <div class="hero">
-        <div class="pfp-wrapper">
-          <div class="pfp-circle"></div>
-          <img class="pfp" src="https://uploads.onecompiler.io/42zpg9c52/447w5bmhn/91c4080b967cf6445e10dd98cbed0192.jpg" alt="Profile Picture">
-          <div class="status-dot"></div>
-        </div>
-        <h1>Valah</h1>
-        <div class="subtitle">Backend/Game Dev</div>
-
-        <!-- LANGUAGES -->
-        <div class="langs">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg" alt="Lua">
-        </div>
-      </div>
-
-      <!-- ABOUT -->
-      <section>
-        <h2>About Me</h2>
-        <div class="section-card">
-          <p>Backend / Game Developer, working on new games and soon to have PROJECTS!</p>
-        </div>
-      </section>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects" style="display:none;">
-      <h2>Projects</h2>
-      <div class="projects-grid" id="projectsGrid">
-        <!-- Sample project cards -->
-        <div class="project-card">
-          <img src="https://via.placeholder.com/300x150" alt="Project Image">
-          <h3>Sample Project 1</h3>
-          <p>Simple project description</p>
-        </div>
-        <div class="project-card">
-          <img src="https://via.placeholder.com/300x150" alt="Project Image">
-          <h3>Sample Project 2</h3>
-          <p>Medium project description</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- DEV LOG -->
-    <section id="devlog" style="display:none;">
-      <h2>Dev Log</h2>
-      <div class="devlog-list" id="devlogList">
-        <!-- Sample dev log items -->
-        <div class="devlog-item">
-          <strong>2026-02-01:</strong> Started building the portfolio website
-        </div>
-        <div class="devlog-item">
-          <strong>2026-02-05:</strong> Added sample projects section
-        </div>
-      </div>
-    </section>
-
-    <footer>Portfolio Built By ChatGPT. I am in no way a front end Developer.</footer>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showSection('home')">Home</button>
+    <button class="tab-btn" onclick="showSection('projects')">Projects</button>
+    <button class="tab-btn" onclick="showSection('devlog')">Dev Log</button>
   </div>
 
-  <script>
-    function showSection(sectionId) {
-      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-      document.getElementById(sectionId).style.display = 'block';
+  <!-- Admin Panel -->
+  <div id="adminPanel" style="margin-bottom:20px;">
+    <h3>Admin Panel</h3>
+    <button id="loginBtn">Login with Google</button>
+    <div id="adminControls" style="display:none; margin-top:10px;">
+      <h4>Add Project</h4>
+      <input type="text" id="projTitle" placeholder="Title">
+      <input type="text" id="projDesc" placeholder="Description">
+      <input type="text" id="projImg" placeholder="Image URL">
+      <input type="text" id="projCategory" placeholder="Category">
+      <button onclick="addProject()">Add Project</button>
 
-      // Update active tab
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`.tab-btn[onclick="showSection('${sectionId}')"]`).classList.add('active');
-    }
-  </script>
+      <h4>Add Dev Log</h4>
+      <input type="text" id="logDate" placeholder="Date (YYYY-MM-DD)">
+      <input type="text" id="logText" placeholder="Description">
+      <button onclick="addDevLog()">Add Log</button>
+    </div>
+  </div>
+
+  <!-- Home Section -->
+  <section id="home">
+    <div class="hero">
+      <div class="pfp-wrapper">
+        <div class="pfp-circle"></div>
+        <img class="pfp" src="https://uploads.onecompiler.io/42zpg9c52/447w5bmhn/91c4080b967cf6445e10dd98cbed0192.jpg" alt="Profile Picture">
+        <div class="status-dot"></div>
+      </div>
+      <h1>Valah</h1>
+      <div class="subtitle">Backend/Game Dev</div>
+      <div class="langs">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg" alt="Lua">
+      </div>
+    </div>
+
+    <section>
+      <h2>About Me</h2>
+      <div class="section-card">
+        <p>Backend / Game Developer, working on new games and soon to have PROJECTS!</p>
+      </div>
+    </section>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" style="display:none;">
+    <h2>Projects</h2>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </section>
+
+  <!-- Dev Log -->
+  <section id="devlog" style="display:none;">
+    <h2>Dev Log</h2>
+    <div class="devlog-list" id="devlogList"></div>
+  </section>
+
+  <footer>Portfolio Built By ChatGPT. I am in no way a front end Developer.</footer>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyDim2xJi-WA1ztNoJrG3SIBbEc2U06qm8o",
+  authDomain: "portfoliodata-8d480.firebaseapp.com",
+  projectId: "portfoliodata-8d480",
+  storageBucket: "portfoliodata-8d480.firebasestorage.app",
+  messagingSenderId: "758262818066",
+  appId: "1:758262818066:web:92ab32b6e40508eb28bfcb"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// Replace with your Firebase UID
+const ADMIN_UID = "DNZKF3TSukQZovQrIHiacgTKCDg2";
+
+// Google Login
+document.getElementById("loginBtn").addEventListener("click", async ()=>{
+  const result = await signInWithPopup(auth, provider);
+  if(result.user.uid===ADMIN_UID){
+    document.getElementById("adminControls").style.display="block";
+    alert("Admin logged in!");
+  } else {
+    alert("This Google account is not authorized.");
+  }
+});
+
+// Load Projects
+async function loadProjects(){
+  const grid = document.getElementById("projectsGrid");
+  grid.innerHTML="";
+  const snapshot = await getDocs(collection(db,"projects"));
+  snapshot.forEach(doc=>{
+    const data=doc.data();
+    const card=document.createElement("div");
+    card.className="project-card";
+    card.innerHTML=`<img src="${data.img}" alt="Project Image"><h3>${data.title}</h3><p>${data.desc}</p>`;
+    grid.appendChild(card);
+  });
+}
+
+// Load Dev Logs
+async function loadDevLogs(){
+  const list=document.getElementById("devlogList");
+  list.innerHTML="";
+  const snapshot=await getDocs(query(collection(db,"devlogs"), orderBy("date","desc")));
+  snapshot.forEach(doc=>{
+    const data=doc.data();
+    const item=document.createElement("div");
+    item.className="devlog-item";
+    item.innerHTML=`<strong>${data.date}:</strong> ${data.text}`;
+    list.appendChild(item);
+  });
+}
+
+// Admin Add
+async function addProject(){
+  const title=document.getElementById("projTitle").value;
+  const desc=document.getElementById("projDesc").value;
+  const img=document.getElementById("projImg").value;
+  const category=document.getElementById("projCategory").value;
+  await addDoc(collection(db,"projects"),{title,desc,img,category});
+  loadProjects();
+}
+
+async function addDevLog(){
+  const date=document.getElementById("logDate").value;
+  const text=document.getElementById("logText").value;
+  await addDoc(collection(db,"devlogs"),{date,text});
+  loadDevLogs();
+}
+
+// Tabs
+function showSection(id){
+  document.querySelectorAll("section").forEach(s=>s.style.display="none");
+  document.getElementById(id).style.display="block";
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelector(`.tab-btn[onclick="showSection('${id}')"]`).classList.add("active");
+}
+
+// Load Data
+window.addEventListener("DOMContentLoaded", ()=>{
+  loadProjects();
+  loadDevLogs();
+});
+</script>
 </body>
 </html>
