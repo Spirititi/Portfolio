@@ -30,6 +30,29 @@
       padding: 60px 24px 120px;
     }
 
+    /* NAVIGATION TABS */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: var(--bg-soft);
+      border: 1px solid #1c1c22;
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .tab-btn:hover, .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
     .hero {
       background: linear-gradient(145deg, #0e0e12, #0a0a0d);
       border-radius: 22px;
@@ -52,10 +75,9 @@
       border: 3px solid #1e1e26;
       position: relative;
       z-index: 2;
-      object-fit: cover; /* keep aspect ratio */
+      object-fit: cover;
     }
 
-    /* Animated white circle around PFP */
     .pfp-circle {
       position: absolute;
       top: -6px;
@@ -66,13 +88,10 @@
       border-radius: 50%;
       border-top-color: transparent;
       animation: spin 1.5s linear infinite;
-      z-index: 1; /* behind PFP */
+      z-index: 1;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .status-dot {
       position: absolute;
@@ -83,7 +102,7 @@
       border-radius: 50%;
       border: 3px solid var(--bg-soft);
       background: var(--online);
-      z-index: 3; /* always on top */
+      z-index: 3;
     }
 
     h1 { margin: 16px 0 6px; font-size: 28px; }
@@ -118,49 +137,126 @@
       box-shadow: 0 0 0 1px #1c1c22;
     }
 
+    /* Projects Gallery */
+    .projects-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .project-card {
+      background: var(--bg-soft);
+      border-radius: 14px;
+      padding: 16px;
+      flex: 1 1 200px;
+      min-width: 200px;
+      box-shadow: 0 0 0 1px #1c1c22;
+    }
+
+    .project-card img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .project-card h3 { margin: 8px 0; }
+    .project-card p { font-size: 14px; color: var(--muted); }
+
+    /* Dev Log */
+    .devlog-list { display: flex; flex-direction: column; gap: 12px; }
+    .devlog-item {
+      background: var(--bg-soft);
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 0 0 1px #1c1c22;
+    }
+
     footer { margin-top: 120px; text-align: center; font-size: 12px; color: var(--muted); }
+
   </style>
 </head>
 <body>
   <div class="page">
 
-    <!-- HERO -->
-    <div class="hero">
-      <div class="pfp-wrapper">
-        <div class="pfp-circle"></div>
-        <img class="pfp" src="https://uploads.onecompiler.io/42zpg9c52/447w5bmhn/91c4080b967cf6445e10dd98cbed0192.jpg" alt="Profile Picture">
-        <div class="status-dot"></div>
-      </div>
-      <h1>Valah</h1>
-      <div class="subtitle">Backend/Game Dev</div>
-
-      <!-- LANGUAGES -->
-      <div class="langs">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg" alt="Lua">
-      </div>
+    <!-- NAVIGATION TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showSection('home')">Home</button>
+      <button class="tab-btn" onclick="showSection('projects')">Projects</button>
+      <button class="tab-btn" onclick="showSection('devlog')">Dev Log</button>
     </div>
 
-    <!-- BIO / ABOUT -->
-    <section>
-      <h2>About Me</h2>
-      <div class="section-card">
-        <p>
-          Backend / Game Developer, working on new games and soon to have PROJECTS!
-        </p>
+    <!-- HOME -->
+    <section id="home">
+      <div class="hero">
+        <div class="pfp-wrapper">
+          <div class="pfp-circle"></div>
+          <img class="pfp" src="https://uploads.onecompiler.io/42zpg9c52/447w5bmhn/91c4080b967cf6445e10dd98cbed0192.jpg" alt="Profile Picture">
+          <div class="status-dot"></div>
+        </div>
+        <h1>Valah</h1>
+        <div class="subtitle">Backend/Game Dev</div>
+
+        <!-- LANGUAGES -->
+        <div class="langs">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg" alt="Lua">
+        </div>
       </div>
+
+      <!-- ABOUT -->
+      <section>
+        <h2>About Me</h2>
+        <div class="section-card">
+          <p>Backend / Game Developer, working on new games and soon to have PROJECTS!</p>
+        </div>
+      </section>
     </section>
 
     <!-- PROJECTS -->
-    <section>
+    <section id="projects" style="display:none;">
       <h2>Projects</h2>
-      <div class="section-card">
-        <p>Coming Soon...</p>
+      <div class="projects-grid" id="projectsGrid">
+        <!-- Sample project cards -->
+        <div class="project-card">
+          <img src="https://via.placeholder.com/300x150" alt="Project Image">
+          <h3>Sample Project 1</h3>
+          <p>Simple project description</p>
+        </div>
+        <div class="project-card">
+          <img src="https://via.placeholder.com/300x150" alt="Project Image">
+          <h3>Sample Project 2</h3>
+          <p>Medium project description</p>
+        </div>
       </div>
     </section>
 
-    <footer>Portfolio Built By Chatgpt i am in no way a front end Developer</footer>
+    <!-- DEV LOG -->
+    <section id="devlog" style="display:none;">
+      <h2>Dev Log</h2>
+      <div class="devlog-list" id="devlogList">
+        <!-- Sample dev log items -->
+        <div class="devlog-item">
+          <strong>2026-02-01:</strong> Started building the portfolio website
+        </div>
+        <div class="devlog-item">
+          <strong>2026-02-05:</strong> Added sample projects section
+        </div>
+      </div>
+    </section>
+
+    <footer>Portfolio Built By ChatGPT. I am in no way a front end Developer.</footer>
   </div>
+
+  <script>
+    function showSection(sectionId) {
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+      document.getElementById(sectionId).style.display = 'block';
+
+      // Update active tab
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.tab-btn[onclick="showSection('${sectionId}')"]`).classList.add('active');
+    }
+  </script>
 </body>
 </html>
