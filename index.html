@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio</title>
 <link rel="icon" href="geography-xxl.png" type="image/png">
 <style>
 :root { --bg:#0b0b0d; --bg-soft:#121216; --accent:#5865F2; --text:#e6e6e6; --muted:#9a9a9a; --online:#3ba55d; }
-* { box-sizing: border-box; }
-body { margin:0; font-family: Inter, system-ui, sans-serif; background: radial-gradient(circle at top,#15151b,var(--bg)); color:var(--text); }
+* { box-sizing:border-box; }
+body { margin:0; font-family:Inter, system-ui, sans-serif; background:radial-gradient(circle at top,#15151b,var(--bg)); color:var(--text);}
 .page { max-width:1000px; margin:0 auto; padding:60px 24px 120px; }
 
 /* Tabs */
@@ -57,9 +57,9 @@ footer { margin-top:120px; text-align:center; font-size:12px; color:var(--muted)
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="showSection('home')">Home</button>
-    <button class="tab-btn" onclick="showSection('projects')">Projects</button>
-    <button class="tab-btn" onclick="showSection('devlog')">Dev Log</button>
+    <button class="tab-btn active" data-target="home">Home</button>
+    <button class="tab-btn" data-target="projects">Projects</button>
+    <button class="tab-btn" data-target="devlog">Dev Log</button>
   </div>
 
   <!-- Admin Panel -->
@@ -124,7 +124,7 @@ footer { margin-top:120px; text-align:center; font-size:12px; color:var(--muted)
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -141,17 +141,24 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Replace with your Firebase UID
+// Your UID
 const ADMIN_UID = "DNZKF3TSukQZovQrIHiacgTKCDg2";
 
 // Google Login
 document.getElementById("loginBtn").addEventListener("click", async ()=>{
-  const result = await signInWithPopup(auth, provider);
-  if(result.user.uid===ADMIN_UID){
-    document.getElementById("adminControls").style.display="block";
-    alert("Admin logged in!");
-  } else {
-    alert("This Google account is not authorized.");
+  try {
+    await signInWithPopup(auth, provider);
+    // admin panel will show via onAuthStateChanged
+  } catch(err) {
+    console.error(err);
+    alert("Login failed: " + err.message);
+  }
+});
+
+// Show admin controls if UID matches
+onAuthStateChanged(auth, user => {
+  if(user && user.uid === ADMIN_UID){
+    document.getElementById("adminControls").style.display = "block";
   }
 });
 
@@ -161,41 +168,41 @@ async function loadProjects(){
   grid.innerHTML="";
   const snapshot = await getDocs(collection(db,"projects"));
   snapshot.forEach(doc=>{
-    const data=doc.data();
-    const card=document.createElement("div");
-    card.className="project-card";
-    card.innerHTML=`<img src="${data.img}" alt="Project Image"><h3>${data.title}</h3><p>${data.desc}</p>`;
+    const data = doc.data();
+    const card = document.createElement("div");
+    card.className = "project-card";
+    card.innerHTML = `<img src="${data.img}" alt="Project Image"><h3>${data.title}</h3><p>${data.desc}</p>`;
     grid.appendChild(card);
   });
 }
 
 // Load Dev Logs
 async function loadDevLogs(){
-  const list=document.getElementById("devlogList");
+  const list = document.getElementById("devlogList");
   list.innerHTML="";
-  const snapshot=await getDocs(query(collection(db,"devlogs"), orderBy("date","desc")));
+  const snapshot = await getDocs(query(collection(db,"devlogs"), orderBy("date","desc")));
   snapshot.forEach(doc=>{
-    const data=doc.data();
-    const item=document.createElement("div");
-    item.className="devlog-item";
-    item.innerHTML=`<strong>${data.date}:</strong> ${data.text}`;
+    const data = doc.data();
+    const item = document.createElement("div");
+    item.className = "devlog-item";
+    item.innerHTML = `<strong>${data.date}:</strong> ${data.text}`;
     list.appendChild(item);
   });
 }
 
 // Admin Add
 async function addProject(){
-  const title=document.getElementById("projTitle").value;
-  const desc=document.getElementById("projDesc").value;
-  const img=document.getElementById("projImg").value;
-  const category=document.getElementById("projCategory").value;
+  const title = document.getElementById("projTitle").value;
+  const desc = document.getElementById("projDesc").value;
+  const img = document.getElementById("projImg").value;
+  const category = document.getElementById("projCategory").value;
   await addDoc(collection(db,"projects"),{title,desc,img,category});
   loadProjects();
 }
 
 async function addDevLog(){
-  const date=document.getElementById("logDate").value;
-  const text=document.getElementById("logText").value;
+  const date = document.getElementById("logDate").value;
+  const text = document.getElementById("logText").value;
   await addDoc(collection(db,"devlogs"),{date,text});
   loadDevLogs();
 }
@@ -205,13 +212,19 @@ function showSection(id){
   document.querySelectorAll("section").forEach(s=>s.style.display="none");
   document.getElementById(id).style.display="block";
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-  document.querySelector(`.tab-btn[onclick="showSection('${id}')"]`).classList.add("active");
+  document.querySelector(`.tab-btn[data-target="${id}"]`).classList.add("active");
 }
 
-// Load Data
+// Attach tab click events
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>showSection(btn.dataset.target));
+});
+
+// Load data on start
 window.addEventListener("DOMContentLoaded", ()=>{
   loadProjects();
   loadDevLogs();
+  showSection('home'); // show home by default
 });
 </script>
 </body>
